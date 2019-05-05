@@ -1,0 +1,181 @@
+<!--
+	Copyright 2019 Rumesh Sudhaharan
+
+	This file is part of bio_souls.
+
+	bio_souls is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	bio_souls is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with bio_souls.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>bio_souls - 0.8</title>
+
+	<script type="text/javascript" src="resources/jquery/jquery.min.js"></script>
+
+	<script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css">
+
+	<script type="text/javascript" src="resources/scripts/main.js"></script>
+	<link rel="stylesheet" type="text/css" href="resources/styles/stylesheet.css">
+</head>
+<body>
+
+	<div class="container-fluid" id="header">
+		<h1>bio_souls 0.8</h1>
+		<h2 class="d-inline-block">Location:</h2>
+		<h2 class="d-inline-block" id="location_element">Start room</h2>
+	</div>
+
+	<div class="container-fluid" id="content_div">
+		<!-- Start room -->
+		<div class="container room visible" id="start_room" data-cur_room="Start Room">
+			<button class="btn col-3 btn-primary door" id="open_room_zombie" data-room="zombie_room">zombie Door</button>
+			<button class="btn col-3 btn-primary door" data-room="death_room" data-dead>death Door</button>
+			<button class="btn col-3 btn-primary door" id="open_room_npc" data-room="npc_room" disabled>npc Door</button>
+		</div>
+	
+		<!-- Zombie room where you survive -->
+		<div class="container room invisible" id="zombie_room_survive" data-cur_room="Zombie Room">
+			<button class="btn btn-block btn-primary door" data-room="dark_room">Continue</button>
+		</div>		
+
+		<!-- Zombie room where you die -->
+		<div class="container room invisible" id="zombie_room_die" data-cur_room="Zombie Room">
+			<button class="btn btn-block btn-danger door" data-room="death_room" data-dead>Continue</button>
+		</div>
+	
+		<!-- Dead room / shows stats -->
+		<div class="container room invisible" id="death_room" data-cur_room="Death Room">
+			<!-- <img src="resources/you_died.gif" > -->
+			<div><video id="you_died_vid" src="resources/you_died.mp4" type="video/mp4" autoplay loop/></div>
+			<h1>YOU DIED</h1>
+			<h2>Your Stats</h2>
+			<ul class="list-group">
+				<li class="list-group-item" id="player_death_count"></li>
+				<li class="list-group-item" id="player_enhanced_speed"></li>
+				<li class="list-group-item" id="player_enhanced_vision"></li>
+				<li class="list-group-item" id="player_enhanced_endurance"></li>
+			</ul>
+			<button class="btn btn-block btn-danger door" data-room="start_room" data-resurrect>Restart</button>
+		</div>
+	
+		<!-- NPC room / for upgrading self -->
+		<div class="container room invisible" id="npc_room" data-cur_room="NPC Room">
+			<div class="container-fluid" id="trait_selector">
+				<p>Please select any two traits</p>
+				<div class="btn-group-vertical col-3 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="S" data-trait="speed" data-dominance="full">SS</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="s" data-trait="speed" data-dominance="partial">Ss</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="s" data-allele2="s" data-trait="speed" data-dominance="none">ss</button>
+				</div>
+
+				<div class="btn-group-vertical col-3 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="V" data-trait="vision" data-dominance="full">VV</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="v" data-trait="vision" data-dominance="partial">Vv</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="v" data-allele2="v" data-trait="vision" data-dominance="none">vv</button>
+				</div>		
+
+				<div class="btn-group-vertical col-3 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="E" data-trait="endurance" data-dominance="full">EE</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="e" data-trait="endurance" data-dominance="partial">Ee</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="e" data-allele2="e" data-trait="endurance" data-dominance="none">ee</button>
+				</div>
+
+				<div class="btn-group-vertical col-3 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="S" data-trait="speed" data-dominance="full">SS</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="s" data-trait="speed" data-dominance="partial">Ss</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="s" data-allele2="s" data-trait="speed" data-dominance="none">ss</button>
+				</div>
+
+				<div class="btn-group-vertical col-3 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="V" data-trait="vision" data-dominance="full">VV</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="v" data-trait="vision" data-dominance="partial">Vv</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="v" data-allele2="v" data-trait="vision" data-dominance="none">vv</button>
+				</div>
+
+				<div class="btn-group-vertical col-3 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="E" data-trait="endurance" data-dominance="full">EE</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="e" data-trait="endurance" data-dominance="partial">Ee</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="e" data-allele2="e" data-trait="endurance" data-dominance="none">ee</button>
+				</div>
+			</div>
+
+			<button class="btn btn-block btn-success" id="submit_traits">Continue</button>
+			<button class="btn btn-block btn-primary door" data-room="start_room">Go Back</button>
+		</div>
+	
+		<!-- Dark room -->
+		<div class="container room invisible" id="dark_room" data-cur_room="Dark Room">
+			<button class="btn col-3 btn-primary door" data-room="trap_room">Left Door</button>
+			<button class="btn col-3 btn-primary door" data-room="puzzle_room">Right Door</button>
+		</div>
+	
+		<!-- Trap room -->
+		<div class="container room invisible" id="trap_room" data-cur_room="Trap Room">
+			<button class="btn btn-block btn-danger door" data-room="death_room" data-dead>Continue</button>
+		</div>
+	
+		<!-- Puzzle room -->
+		<div class="container room invisible" id="puzzle_room" data-cur_room="Trap Room">
+			<button class="btn btn-block btn-primary door" data-room="start_room">Go Back</button>
+		</div>		
+	</div>
+
+
+	<div class="container-fluid" id="info_div">
+		<h1 class="info_text   visible" id="start_room_text">There are 3 doors in front of you</h1>
+		<h1 class="info_text invisible" id="zombie_room_text">Theres a horde of zombies running at you!</h1>
+		<h1 class="info_text sub_text invisible" id="zombie_room_survive_text">You manage to outrun the zombies and reach a dark room with two doors</h1>			
+		<h1 class="info_text sub_text invisible" id="zombie_room_die_text">The zombies catch up to you and tear you to shreads.</h1>
+		<h1 class="info_text invisible" id="npc_room_text">Theres an npc here. Choose your traits</h1>
+		<h1 class="info_text invisible" id="trap_room_text">Oops, you walked into a trap</h1>
+		<h1 class="info_text invisible" id="puzzle_room_text">Something doesnt seem right here</h1>
+	</div>
+
+	<div class="modal" id="trait_result" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Trait Results</h4>
+					<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+				</div>
+
+				<div class="modal-body">
+					<table class="table table-bordered">
+						<tr>
+							<td class="punett_sqr" id="ps_00"></td>
+							<td class="punett_sqr" id="ps_10"></td>
+							<td class="punett_sqr" id="ps_20"></td>
+						</tr>
+
+						<tr>
+							<td class="punett_sqr" id="ps_01"></td>
+							<td class="punett_sqr" id="ps_11"></td>
+							<td class="punett_sqr" id="ps_21"></td>
+						</tr>
+
+						<tr>
+							<td class="punett_sqr" id="ps_02"></td>
+							<td class="punett_sqr" id="ps_12"></td>
+							<td class="punett_sqr" id="ps_22"></td>
+						</tr>
+					</table>
+					<h3 class="text-left" id="trait_result_text"></h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

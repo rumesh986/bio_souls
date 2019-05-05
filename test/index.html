@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Biology Souls - 0.1</title>
+
+	<script type="text/javascript" src="resources/jquery/jquery.min.js"></script>
+
+	<script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css">
+
+	<script type="text/javascript" src="resources/scripts/main.js"></script>
+	<link rel="stylesheet" type="text/css" href="resources/styles/stylesheet.css">
+</head>
+<body>
+	<!-- Start room -->
+	<div class="container room fixed-top visible" id="start_room">
+		<h1 class="title">Start Room</h1>
+		<button class="btn btn-primary door" id="open_room_zombie" data-room="zombie_room">zombie Door</button>
+		<button class="btn btn-primary door" data-room="death_room" data-dead>death Door</button>
+		<button class="btn btn-primary door" data-room="npc_room">npc Door</button>
+	</div>
+
+	<!-- Zombie chase room -->
+	<div class="container room fixed-top invisible" id="zombie_room">
+		<h1 class="info_text fixed-bottom">Theres a horde of zombies running at you!</h1>
+
+
+	</div>
+
+		<!-- Sub room where you survive -->
+		<div class="container room invisible" id="zombie_room_survive">
+			<h1 class="info_text fixed-bottom">You manage to outrun the zombies and reach a dark room with two doors</h1>			
+			<button class="btn btn-primary door" data-room="dark_room">Continue</button>
+		</div>
+		
+		<!-- sub room where you die -->
+		<div class="container room invisible" id="zombie_room_die">
+			<h1 class="info_text fixed-bottom">The zombies catch up to you and tear you to shreads.</h1>
+			<button class="btn btn-danger door" data-room="death_room" data-dead>Continue</button>
+		</div>
+
+	<!-- Dead room / shows stats -->
+	<div class="container room fixed-top invisible" id="death_room">
+		<h1>YOU DIED</h1>
+		<h2>Your Stats</h2>
+		<ul class="list-group">
+			<li class="list-group-item" id="player_death_count"></li>
+			<li class="list-group-item" id="player_enhanced_vision"></li>
+			<li class="list-group-item" id="player_enhanced_speed"></li>
+		</ul>
+		<button class="btn btn-danger door" data-room="start_room" data-resurrect>Restart</button>
+	</div>
+
+	<!-- NPC room / for upgrading self -->
+	<div class="container room fixed-top invisible" id="npc_room">
+		<h1 class="info_text fixed-bottom">Theres an npc here</h1>
+		<button class="btn btn-primary door" data-room="start_room">Go Back</button>
+	</div>
+
+	<!-- Dark room -->
+	<div class="container room fixed-top invisible" id="dark_room">
+		<button class="btn btn-primary door" data-room="trap_room">Left Door</button>
+		<button class="btn btn-primary door" data-room="puzzle_room">Right Door</button>
+	</div>
+
+	<!-- Trap room -->
+	<div class="container room fixed-top invisible" id="trap_room">
+		<h1 class="info_text fixed-bottom">Oops, you walked into a trap</h1>
+		<button class="btn btn-danger door" data-room="death_room" data-dead>Continue</button>
+	</div>
+
+	<!-- Puzzle room -->
+	<div class="container room fixed-top invisible" id="puzzle_room">
+		<h1 class="info_text fixed-bottom">Something doesnt seem right here</h1>
+
+	</div>
+</body>
+</html>

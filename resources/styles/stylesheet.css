@@ -1,0 +1,46 @@
+/*
+	Copyright 2019 Rumesh Sudhaharan
+
+	This file is part of bio_souls.
+
+	bio_souls is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	bio_souls is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with bio_souls.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+.room {
+	position: fixed;
+	height: 300px;
+	margin-top: 50px;
+}
+
+.info_text {
+	position: fixed;
+	height: 200px;
+	bottom: 20px;
+}
+
+.sub_text {
+	padding-top: 100px;
+}
+
+.trait {
+	height: 50px;
+}
+
+.trait_group {
+	margin-bottom: 10px;
+}
+
+#trait_selector {
+	margin-bottom: 20px;
+}
