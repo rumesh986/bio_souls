@@ -18,10 +18,11 @@
 -->
 
 <!DOCTYPE html>
-<html>
+<html >
 <head>
-	<title>bio_souls - 0.8</title>
-
+	<title>bio_souls - 0.8.3</title>
+	<meta charset="utf-8">
+	
 	<script type="text/javascript" src="resources/jquery/jquery.min.js"></script>
 
 	<script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
@@ -32,36 +33,28 @@
 </head>
 <body>
 
-	<div class="container-fluid" id="header">
-		<h1>bio_souls 0.8</h1>
-		<h2 class="d-inline-block">Location:</h2>
-		<h2 class="d-inline-block" id="location_element">Start room</h2>
+	<div class="container-fluid justify-content-center" id="header">
+		<h4 class="text-center">bio_souls 0.8.3</h4>
+		<h5 class="text-center">Location: <span  id="location_element">Start Room</span></h5>
 	</div>
 
-	<div class="container-fluid" id="content_div">
+	<div class="container-fluid d-flex justify-content-center" id="content_div">
 		<!-- Start room -->
-		<div class="container room visible" id="start_room" data-cur_room="Start Room">
+		<div class="container d-flex justify-content-center room visible" id="start_room" data-cur_room="Start Room">
 			<button class="btn col-3 btn-primary door" id="open_room_zombie" data-room="zombie_room">zombie Door</button>
 			<button class="btn col-3 btn-primary door" data-room="death_room" data-dead>death Door</button>
 			<button class="btn col-3 btn-primary door" id="open_room_npc" data-room="npc_room" disabled>npc Door</button>
 		</div>
-	
-		<!-- Zombie room where you survive -->
-		<div class="container room invisible" id="zombie_room_survive" data-cur_room="Zombie Room">
-			<button class="btn btn-block btn-primary door" data-room="dark_room">Continue</button>
-		</div>		
 
-		<!-- Zombie room where you die -->
-		<div class="container room invisible" id="zombie_room_die" data-cur_room="Zombie Room">
-			<button class="btn btn-block btn-danger door" data-room="death_room" data-dead>Continue</button>
+		<!-- Zombie room -->
+		<div class="container d-flex justify-content-center room invisible" id="zombie_room" data-cur_room="Zombie Room">
+			<button class="btn btn-block btn-danger door" id="zombie_rm_btn" data-room="death_room" data-dead disabled>Continue</button>
 		</div>
 	
 		<!-- Dead room / shows stats -->
-		<div class="container room invisible" id="death_room" data-cur_room="Death Room">
-			<!-- <img src="resources/you_died.gif" > -->
-			<div><video id="you_died_vid" src="resources/you_died.mp4" type="video/mp4" autoplay loop/></div>
-			<h3>YOU DIED</h3>
-			<!-- <h2>Your Stats</h2> -->
+		<div class="container d-flex justify-content-center flex-column room invisible" id="death_room" data-cur_room="Death Room">
+			<div class="d-flex justify-content-center"><video id="you_died_vid" src="resources/you_died.mp4" type="video/mp4" loop/></div>
+			<h4>Your Stats</h4>
 			<ul class="list-group">
 				<li class="list-group-item" id="player_death_count"></li>
 				<li class="list-group-item" id="player_enhanced_speed"></li>
@@ -72,40 +65,40 @@
 		</div>
 	
 		<!-- NPC room / for upgrading self -->
-		<div class="container room invisible" id="npc_room" data-cur_room="NPC Room">
-			<div class="container-fluid" id="trait_selector">
-				<p>Please select any two traits</p>
-				<div class="btn-group-vertical col-3 trait_group">
+		<div class="container d-flex justify-content-center flex-column room invisible" id="npc_room" data-cur_room="NPC Room">
+			<p>Please select any two traits</p>
+			<div class="container-fluid d-flex justify-content-center" id="trait_selector">
+				<div class="btn-group-vertical col-2 trait_group">
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="S" data-trait="speed" data-dominance="full">SS</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="s" data-trait="speed" data-dominance="partial">Ss</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="s" data-allele2="s" data-trait="speed" data-dominance="none">ss</button>
 				</div>
 
-				<div class="btn-group-vertical col-3 trait_group">
+				<div class="btn-group-vertical col-2 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="S" data-trait="speed" data-dominance="full">SS</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="s" data-trait="speed" data-dominance="partial">Ss</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="s" data-allele2="s" data-trait="speed" data-dominance="none">ss</button>
+				</div>
+
+				<div class="btn-group-vertical col-2 trait_group">
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="V" data-trait="vision" data-dominance="full">VV</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="v" data-trait="vision" data-dominance="partial">Vv</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="v" data-allele2="v" data-trait="vision" data-dominance="none">vv</button>
 				</div>		
+				
+				<div class="btn-group-vertical col-2 trait_group">
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="V" data-trait="vision" data-dominance="full">VV</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="v" data-trait="vision" data-dominance="partial">Vv</button>
+					<button class="btn btn-info trait" data-toggle="button" data-allele1="v" data-allele2="v" data-trait="vision" data-dominance="none">vv</button>
+				</div>
 
-				<div class="btn-group-vertical col-3 trait_group">
+				<div class="btn-group-vertical col-2 trait_group">
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="E" data-trait="endurance" data-dominance="full">EE</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="e" data-trait="endurance" data-dominance="partial">Ee</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="e" data-allele2="e" data-trait="endurance" data-dominance="none">ee</button>
 				</div>
 
-				<div class="btn-group-vertical col-3 trait_group">
-					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="S" data-trait="speed" data-dominance="full">SS</button>
-					<button class="btn btn-info trait" data-toggle="button" data-allele1="S" data-allele2="s" data-trait="speed" data-dominance="partial">Ss</button>
-					<button class="btn btn-info trait" data-toggle="button" data-allele1="s" data-allele2="s" data-trait="speed" data-dominance="none">ss</button>
-				</div>
-
-				<div class="btn-group-vertical col-3 trait_group">
-					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="V" data-trait="vision" data-dominance="full">VV</button>
-					<button class="btn btn-info trait" data-toggle="button" data-allele1="V" data-allele2="v" data-trait="vision" data-dominance="partial">Vv</button>
-					<button class="btn btn-info trait" data-toggle="button" data-allele1="v" data-allele2="v" data-trait="vision" data-dominance="none">vv</button>
-				</div>
-
-				<div class="btn-group-vertical col-3 trait_group">
+				<div class="btn-group-vertical col-2 trait_group">
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="E" data-trait="endurance" data-dominance="full">EE</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="E" data-allele2="e" data-trait="endurance" data-dominance="partial">Ee</button>
 					<button class="btn btn-info trait" data-toggle="button" data-allele1="e" data-allele2="e" data-trait="endurance" data-dominance="none">ee</button>
@@ -133,15 +126,8 @@
 		</div>		
 	</div>
 
-
-	<div class="container-fluid" id="info_div">
-		<h2 class="info_text   visible" id="start_room_text">There are 3 doors in front of you</h2>
-		<h2 class="info_text invisible" id="zombie_room_text">Theres a horde of zombies running at you!</h2>
-		<h2 class="info_text sub_text invisible" id="zombie_room_survive_text">You manage to outrun the zombies and reach a dark room with two doors</h2>
-		<h2 class="info_text sub_text invisible" id="zombie_room_die_text">The zombies catch up to you and tear you to shreads.</h2>
-		<h2 class="info_text invisible" id="npc_room_text">Theres an npc here. Choose your traits</h2>
-		<h2 class="info_text invisible" id="trap_room_text">Oops, you walked into a trap</h2>
-		<h2 class="info_text invisible" id="puzzle_room_text">Something doesnt seem right here</h2>
+	<div class="container-fluid d-flex justify-content-center" id="info_div">
+		<p id="info_text"></p>
 	</div>
 
 	<div class="modal" id="trait_result" tabindex="-1" role="dialog">
@@ -172,7 +158,7 @@
 							<td class="punett_sqr" id="ps_22"></td>
 						</tr>
 					</table>
-					<h3 class="text-left" id="trait_result_text"></h3>
+					<h3 class="text-center" id="trait_result_text"></h3>
 				</div>
 			</div>
 		</div>

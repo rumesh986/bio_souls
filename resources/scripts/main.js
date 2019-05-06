@@ -11,12 +11,17 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//s
+//
 // You should have received a copy of the GNU General Public License
 // along with bio_souls.  If not, see <https://www.gnu.org/licenses/>.
 
 
 console.log("main.js connected");
+
+var system = {
+	zombie_clicks: 0,
+	rune_clicks: 0
+}
 
 var player = {
 	death_count: 0,
@@ -24,7 +29,6 @@ var player = {
 	enhanced_vision: false,
 	enhanced_endurance: false
 }
-
 
 function player_died() {
 	player.death_count++;
@@ -41,17 +45,40 @@ function player_died() {
 	$("#you_died_vid").get(0).play();
 }
 
-function open_room(room_name) {
-	$("#"+room_name).removeClass("invisible").addClass("visible");
-	$("#"+room_name+"_text").removeClass("invisible").addClass("visible");
-	$("#location_element").text($("#"+room_name).data("cur_room"));
-	console.log()
-}
-
 function close_room(room_name) {
 	$(".room").addClass("invisible").removeClass("visible");
-	$(".info_text").addClass("invisible").removeClass("visible");
+	$("#info_text").text("");
 	$("#you_died_vid").get(0).pause();
+	$(document).off("click", zombie_click_fn);
+}
+
+function zombie_click_fn() {
+	console.log(system.zombie_clicks);
+
+	if (system.zombie_clicks > 0) {
+		$("#info_text").text((player.enhanced_speed) ? "You manage to outrun the zombies and reach a dark room with two doors" : "The zombies catch up to you and tear you to shreads.");
+		$("#zombie_rm_btn").removeAttr("disabled");
+	}
+
+	system.zombie_clicks++;
+}
+
+function open_room(room_name) {
+	$("#"+room_name).removeClass("invisible").addClass("visible");
+	$("#location_element").text($("#"+room_name).data("cur_room"));
+	console.log(room_name);
+	switch (room_name) {
+		case 'start_room': 			$("#info_text").text("There are 3 doors in front of you");										break;
+		case 'zombie_room': 		
+			$("#info_text").text("Theres a horde of zombies running at you!");
+			system.zombie_clicks = 0;
+			$("#zombie_rm_btn").attr("disabled", "");
+			$(document).on("click", zombie_click_fn);
+			break;
+		case 'npc_room': 			$("#info_text").text("Theres an npc here. Choose your traits");									break;
+		case 'trap_room': 			$("#info_text").text("Oops, you walked into a trap");											break;
+		case 'puzzle_room': 		$("#info_text").text("Something doesnt seem right here");										break;
+	}
 }
 
 function check_attr(element, attr) {
@@ -74,7 +101,12 @@ function trait_calc(prob, trait) {
 	if (trait_success) {
 		$("#trait_result_text").text("Congratulations, You have acheived the "+trait+" trait.");
 		switch (trait) {
-			case 'speed': 		player.enhanced_speed 		= true;		break;
+			case 'speed': 
+				player.enhanced_speed = true;
+				$("#zombie_rm_btn").removeClass("btn-danger").addClass("btn-primary");
+				$("#zombie_rm_btn").attr("data-room", "dark_room");
+				$("#zombie_rm_btn").removeAttr("data-dead");
+				break;
 			case 'vision': 		player.enhanced_vision 		= true;		break;
 			case 'endurance': 	player.enhanced_endurance 	= true;		break;
 		}
@@ -85,7 +117,8 @@ function trait_calc(prob, trait) {
 
 $(document).ready(function() {
 	console.log("document ready");
-	// $("#open_room_npc").removeAttr('disabled');
+	$("#open_room_npc").removeAttr('disabled');
+	$("#info_text").text("There are 3 doors in front of you");
 
 	$(".door").click(function() {
 		close_room($(this));
@@ -140,9 +173,5 @@ $(document).ready(function() {
 
 	$("#trait_result").on('hide.bs.modal', function(e) {
 		$(trait_selector).find(".trait.active").removeClass("active");
-	})
-
-	$("#open_room_zombie").click(function() {
-		open_room((player.enhanced_speed) ? "zombie_room_survive" : "zombie_room_die");
 	})
 })	

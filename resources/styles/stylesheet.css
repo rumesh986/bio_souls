@@ -19,15 +19,25 @@
 
 .room {
 	position: fixed;
-	height: 300px;
 }
 
-.info_text {
+.door {
+	margin-right: 10px;
+}
+
+#info_div {
 	position: fixed;
-	height: 200px;
-	bottom: 20px;
+	/*height: 200px;*/
+	bottom: 10px;
 }
 
+#npc_room > p {
+	padding-left: 30px;
+}
+
+#death_room > button {
+	margin-top: 5px;
+}
 .sub_text {
 	padding-top: 100px;
 }
