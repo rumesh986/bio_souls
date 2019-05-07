@@ -27,8 +27,8 @@
 
 #info_div {
 	position: fixed;
-	/*height: 200px;*/
 	bottom: 10px;
+	z-index: -1;
 }
 
 #npc_room > p {

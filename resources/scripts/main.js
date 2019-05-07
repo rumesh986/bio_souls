@@ -15,19 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with bio_souls.  If not, see <https://www.gnu.org/licenses/>.
 
-
 console.log("main.js connected");
 
 var system = {
 	zombie_clicks: 0,
-	rune_clicks: 0
+	trap_rm_clicks: 0,
+	puzzle_rm_clicks: 0,
+	rune_clicks: 0,
+
+	dull_cube_placed: false
 }
 
 var player = {
 	death_count: 0,
+
 	enhanced_speed: false,
 	enhanced_vision: false,
-	enhanced_endurance: false
+	enhanced_endurance: false,
+
+	has_dull_cube: false
 }
 
 function player_died() {
@@ -43,50 +49,6 @@ function player_died() {
 	console.log("You have died " + player.death_count + " times");
 
 	$("#you_died_vid").get(0).play();
-}
-
-function close_room(room_name) {
-	$(".room").addClass("invisible").removeClass("visible");
-	$("#info_text").text("");
-	$("#you_died_vid").get(0).pause();
-	$(document).off("click", zombie_click_fn);
-}
-
-function zombie_click_fn() {
-	console.log(system.zombie_clicks);
-
-	if (system.zombie_clicks > 0) {
-		$("#info_text").text((player.enhanced_speed) ? "You manage to outrun the zombies and reach a dark room with two doors" : "The zombies catch up to you and tear you to shreads.");
-		$("#zombie_rm_btn").removeAttr("disabled");
-	}
-
-	system.zombie_clicks++;
-}
-
-function open_room(room_name) {
-	$("#"+room_name).removeClass("invisible").addClass("visible");
-	$("#location_element").text($("#"+room_name).data("cur_room"));
-	console.log(room_name);
-	switch (room_name) {
-		case 'start_room': 			$("#info_text").text("There are 3 doors in front of you");										break;
-		case 'zombie_room': 		
-			$("#info_text").text("Theres a horde of zombies running at you!");
-			system.zombie_clicks = 0;
-			$("#zombie_rm_btn").attr("disabled", "");
-			$(document).on("click", zombie_click_fn);
-			break;
-		case 'npc_room': 			$("#info_text").text("Theres an npc here. Choose your traits");									break;
-		case 'trap_room': 			$("#info_text").text("Oops, you walked into a trap");											break;
-		case 'puzzle_room': 		$("#info_text").text("Something doesnt seem right here");										break;
-	}
-}
-
-function check_attr(element, attr) {
-	if (typeof($(element).attr("data-"+attr)) !== typeof(undefined)) {
-		return true;
-	} else {
-		return false;
-	}
 }
 
 function trait_calc(prob, trait) {
@@ -117,11 +79,14 @@ function trait_calc(prob, trait) {
 
 $(document).ready(function() {
 	console.log("document ready");
-	$("#open_room_npc").removeAttr('disabled');
+
+	// $("#open_room_npc").removeAttr('disabled');
+	// trait_calc(1, "speed");
+	// trait_calc(1, "vision");
+
 	$("#info_text").text("There are 3 doors in front of you");
 
 	$(".door").click(function() {
-		close_room($(this));
 		open_room($(this).attr('data-room'));
 
 		if (check_attr(this, "dead")) {
@@ -129,6 +94,32 @@ $(document).ready(function() {
 			player_died();
 		}
 	});
+
+	$(".user_option").click(function() {
+		switch ($(this).data('id')) {
+			case 'dull_cube_pick_up':
+				console.log((check_attr(this, 'pick_up')) ? true : false);
+				player.has_dull_cube = (check_attr(this, 'pick_up')) ? true : false;
+				disable_option();
+				open_room("dark_room");
+				break;
+			case 'puzzle_rm_cube_place':
+				if (check_attr(this, 'place_item')) {
+					system.dull_cube_placed = true;
+					player.has_dull_cube = false;
+				} else {
+					system.dull_cube_placed = false;
+					player.has_dull_cube = true;
+				}
+				disable_option();
+				break;
+			case 'puzzle_rm_approach_light':
+				if (check_attr(this, 'approach')) {
+					// next room
+				}
+				break;
+		}
+	})
 
 	$("#submit_traits").click(function() {
 		if ($("#trait_selector").find(".active.trait").length == 2) {
@@ -173,5 +164,6 @@ $(document).ready(function() {
 
 	$("#trait_result").on('hide.bs.modal', function(e) {
 		$(trait_selector).find(".trait.active").removeClass("active");
+		open_room("start_room");
 	})
 })	

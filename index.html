@@ -20,21 +20,24 @@
 <!DOCTYPE html>
 <html >
 <head>
-	<title>bio_souls - 0.8.3</title>
+	<title>bio_souls - 0.8.5</title>
 	<meta charset="utf-8">
-	
+
 	<script type="text/javascript" src="resources/jquery/jquery.min.js"></script>
 
 	<script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css">
 
+
+	<script type="text/javascript" src="resources/scripts/utilities.js"></script>
+	<script type="text/javascript" src="resources/scripts/room_fns.js"></script>
 	<script type="text/javascript" src="resources/scripts/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="resources/styles/stylesheet.css">
 </head>
 <body>
 
 	<div class="container-fluid justify-content-center" id="header">
-		<h4 class="text-center">bio_souls 0.8.3</h4>
+		<h4 class="text-center">bio_souls 0.8.5</h4>
 		<h5 class="text-center">Location: <span  id="location_element">Start Room</span></h5>
 	</div>
 
@@ -42,7 +45,7 @@
 		<!-- Start room -->
 		<div class="container d-flex justify-content-center room visible" id="start_room" data-cur_room="Start Room">
 			<button class="btn col-3 btn-primary door" id="open_room_zombie" data-room="zombie_room">zombie Door</button>
-			<button class="btn col-3 btn-primary door" data-room="death_room" data-dead>death Door</button>
+			<button class="btn col-3 btn-primary door" id="open_death_room" data-room="death_room" data-dead>death Door</button>
 			<button class="btn col-3 btn-primary door" id="open_room_npc" data-room="npc_room" disabled>npc Door</button>
 		</div>
 
@@ -61,7 +64,7 @@
 				<li class="list-group-item" id="player_enhanced_vision"></li>
 				<li class="list-group-item" id="player_enhanced_endurance"></li>
 			</ul>
-			<button class="btn btn-block btn-danger door" data-room="start_room" data-resurrect>Restart</button>
+			<button class="btn btn-block btn-danger door" data-room="start_room">Restart</button>
 		</div>
 	
 		<!-- NPC room / for upgrading self -->
@@ -110,24 +113,25 @@
 		</div>
 	
 		<!-- Dark room -->
-		<div class="container room invisible" id="dark_room" data-cur_room="Dark Room">
+		<div class="container d-flex justify-content-center room invisible" id="dark_room" data-cur_room="Dark Room">
 			<button class="btn col-3 btn-primary door" data-room="trap_room">Left Door</button>
 			<button class="btn col-3 btn-primary door" data-room="puzzle_room">Right Door</button>
 		</div>
 	
 		<!-- Trap room -->
-		<div class="container room invisible" id="trap_room" data-cur_room="Trap Room">
-			<button class="btn btn-block btn-danger door" data-room="death_room" data-dead>Continue</button>
+		<div class="container d-flex justify-content-center room invisible" id="trap_room" data-cur_room="Trap Room">
 		</div>
 	
 		<!-- Puzzle room -->
-		<div class="container room invisible" id="puzzle_room" data-cur_room="Trap Room">
-			<button class="btn btn-block btn-primary door" data-room="start_room">Go Back</button>
+		<div class="container d-flex justify-content-center room invisible" id="puzzle_room" data-cur_room="Trap Room">
+			<button class="btn btn-block btn-primary door" id="puzzle_rm_btn" data-room="start_room">Go Back</button>
 		</div>		
 	</div>
 
-	<div class="container-fluid d-flex justify-content-center" id="info_div">
-		<p id="info_text"></p>
+	<div class="container-fluid d-flex justify-content-center flex-column" id="info_div">
+		<p class="d-flex justify-content-center" id="info_text"></p>
+		<button class="btn btn-success user_option invisible" id="uo_yes">Yes</button>
+		<button class="btn btn-danger  user_option invisible" id="uo_no">No</button>
 	</div>
 
 	<div class="modal" id="trait_result" tabindex="-1" role="dialog">
