@@ -18,12 +18,10 @@
 console.log("main.js connected");
 
 var system = {
-	zombie_clicks: 0,
-	trap_rm_clicks: 0,
-	puzzle_rm_clicks: 0,
-	rune_clicks: 0,
+	clicks: 0,
 
-	dull_cube_placed: false
+	rune_wall_broken: false,
+	approach_statue: false
 }
 
 var player = {
@@ -33,7 +31,7 @@ var player = {
 	enhanced_vision: false,
 	enhanced_endurance: false,
 
-	has_dull_cube: false
+	has_item: false
 }
 
 function player_died() {
@@ -61,7 +59,7 @@ function trait_calc(prob, trait) {
 	}
 
 	if (trait_success) {
-		$("#trait_result_text").text("Congratulations, You have acheived the "+trait+" trait.");
+		$("#trait_result_text").text("You sense an intense spark rushing through your body.");
 		switch (trait) {
 			case 'speed': 
 				player.enhanced_speed = true;
@@ -80,11 +78,16 @@ function trait_calc(prob, trait) {
 $(document).ready(function() {
 	console.log("document ready");
 
+	$(document).click(function() {
+		console.log("system.clicks: "+system.clicks);
+	});
+
 	// $("#open_room_npc").removeAttr('disabled');
 	// trait_calc(1, "speed");
 	// trait_calc(1, "vision");
 
-	$("#info_text").text("There are 3 doors in front of you");
+	$(document).on("click", initial_rm_click_fn);
+	$(document).click();
 
 	$(".door").click(function() {
 		open_room($(this).attr('data-room'));
@@ -93,31 +96,98 @@ $(document).ready(function() {
 			console.log("dead");
 			player_died();
 		}
+
+		if (this.id === "open_courtyard") {
+			set_loc("Courtyard");
+			system.clicks = 0;
+			$(document).on("click", courtyard_click_fn);
+		} else if (this.id === "open_undead_room") {
+			set_loc("Hallway");
+			system.clicks = 0;
+			$(document).on("click", undead_rm_click_fn);
+			$(document).off("click", push_zombie_click_fn);
+			$(document).off("click", fight_zombie_click_fn);
+		} else if (this.id === "open_item_room") {
+			set_loc("Dark Room");
+			system.clicks = 0;
+			$(document).on("click", item_rm_click_fn);
+		} else if (this.id === "open_puzzle_room") {
+			set_loc("Dark Room");
+			system.clicks = 0;
+			$(document).on("click", puzzle_rm_click_fn);
+		}
 	});
 
 	$(".user_option").click(function() {
-		switch ($(this).data('id')) {
-			case 'dull_cube_pick_up':
-				console.log((check_attr(this, 'pick_up')) ? true : false);
-				player.has_dull_cube = (check_attr(this, 'pick_up')) ? true : false;
-				disable_option();
-				open_room("dark_room");
-				break;
-			case 'puzzle_rm_cube_place':
-				if (check_attr(this, 'place_item')) {
-					system.dull_cube_placed = true;
-					player.has_dull_cube = false;
+		console.log("uo clicked: "+$(this).data('option'));
+		console.log(this);
+
+		switch ($(this).data('option')) {
+			case 'break_rune_wall':
+				if ($(this).data('action')) {
+					system.clicks = 0;
+					system.rune_wall_broken = true;
 				} else {
-					system.dull_cube_placed = false;
-					player.has_dull_cube = true;
+					system.rune_wall_broken = false;
+					open_room("start_room");
 				}
 				disable_option();
 				break;
-			case 'puzzle_rm_approach_light':
-				if (check_attr(this, 'approach')) {
-					// next room
+			case 'approach_rune_statue':
+				if ($(this).data('action')) {
+					system.clicks = 0;
+					system.approach_statue = true;
+					$(document).off("click", rune_rm_click_fn);
+					open_room("npc_room");
+				} else {
+					system.approach_statue = false;
+					open_room("start_room");
 				}
+				disable_option();
 				break;
+			case 'fight_zombie': 	
+				$(document).off("click", undead_rm_click_fn);
+
+				if ($(this).data('action')) {
+					system.clicks = 0;
+					$(document).on("click", fight_zombie_click_fn);
+				} else {
+					system.clicks = 0;
+					$(document).on("click", push_zombie_click_fn);
+				}
+				disable_option();
+				break;
+			case 'follow_red_line':
+				if ($(this).data('action')) {
+					$(document).off("click", item_rm_click_fn);
+					system.clicks = 0;
+					$(document).on("click", follow_line_click_fn);
+				} else {
+					open_room("dark_room");
+				}
+				disable_option();
+				break;
+			case 'pick_up_item':
+				if ($(this).data('action')) {
+					print_info("You collect the stone and leave the room.");
+					player.has_item = true;
+					open_room("dark_room");
+				} else {
+					print_info("You leave the room.");
+					open_room("dark_room");
+				}
+				disable_option();
+				break;
+			case 'place_item':
+				if ($(this).data('action')) {
+					print_info("You hear a click and the wall opens to reveal a new pathway.");
+				} else {
+					open_room("dark_room");
+				}
+				disable_option();
+				break;
+			default:
+				console.log("No idea whats going on");
 		}
 	})
 

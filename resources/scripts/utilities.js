@@ -17,27 +17,38 @@
 
 console.log("utilities.js connected");
 
-function enable_option(yes_op, no_op) {
+function enable_option(op_1, op_2) {
+	disable_option();
 	$(".user_option").removeClass("invisible").addClass("visible");
 
-	for (var key in yes_op) {
-		$("#uo_yes").attr("data-"+key, yes_op[key]);
+	console.log(op_1);
+	console.log(op_2);
+
+
+	for (var key in op_1) {
+		if (key === "text") {
+			$("#uo_1").text(op_1['text']);
+		}
+		$("#uo_1").attr("data-"+key, op_1[key]);
 	}
 
-	for (var key in no_op) {
-		$("#uo_no").attr("data-"+key, no_op[key]);
+	for (var key in op_2) {
+		if (key === "text") {
+			$("#uo_2").text(op_2['text']);
+		}
+		$("#uo_2").attr("data-"+key, op_2[key]);
 	}
 }
 
 function disable_option() {
 	$(".user_option").removeClass("visible").addClass("invisible");
 
-	for (key in $("#uo_yes").data()) {
-		$("#uo_yes").removeAttr("data-"+key);
+	for (key in $("#uo_1").data()) {
+		$("#uo_1").removeData(key);
 	}
 
-	for (key in $("#uo_no").data()) {
-		$("#uo_no").removeAttr("data-"+key);
+	for (key in $("#uo_2").data()) {
+		$("#uo_2").removeData(key);
 	}
 }
 
@@ -51,4 +62,8 @@ function check_attr(element, attr) {
 
 function print_info(text) {
 	$("#info_text").text(text);
+}
+
+function set_loc(room) {
+	$("#location_element").text(room);
 }
