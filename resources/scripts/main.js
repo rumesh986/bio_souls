@@ -21,17 +21,36 @@ var system = {
 	clicks: 0,
 
 	rune_wall_broken: false,
-	approach_statue: false
+	approach_statue: false,
+	place_item_puzzle_rm: false,
+	place_buff_runes: false
 }
 
 var player = {
 	death_count: 0,
+	first_battle: true,
 
 	enhanced_speed: false,
 	enhanced_vision: false,
 	enhanced_endurance: false,
 
-	has_item: false
+	attack: "none",
+	defence: "none",
+
+	// fire_attack:  false,
+	// water_attack: false,
+	// grass_attack: false,
+
+	// fire_defence:  false,
+	// water_defence: false,
+	// grase_defence: false,
+
+	has_item: false,
+}
+
+var boss = {
+	attack: "none",
+	defence: "none"
 }
 
 function player_died() {
@@ -49,7 +68,7 @@ function player_died() {
 	$("#you_died_vid").get(0).play();
 }
 
-function trait_calc(prob, trait) {
+function trait_calc(prob, trait, type) {
 	var trait_success = false;
 	if (prob == 0) 		trait_success = false;
 	else if (prob == 1)	trait_success = true;
@@ -59,20 +78,23 @@ function trait_calc(prob, trait) {
 	}
 
 	if (trait_success) {
-		$("#trait_result_text").text("You sense an intense spark rushing through your body.");
-		switch (trait) {
-			case 'speed': 
-				player.enhanced_speed = true;
-				$("#zombie_rm_btn").removeClass("btn-danger").addClass("btn-primary");
-				$("#zombie_rm_btn").attr("data-room", "dark_room");
-				$("#zombie_rm_btn").removeAttr("data-dead");
-				break;
-			case 'vision': 		player.enhanced_vision 		= true;		break;
-			case 'endurance': 	player.enhanced_endurance 	= true;		break;
+		$("#trait_result_text").text("You feel an intense spark rushing through your body.");
+
+		if (type == "basic") {
+			switch (trait) {
+				case 'speed': 		player.enhanced_speed 		= true;		break;
+				case 'vision': 		player.enhanced_vision 		= true;		break;
+				case 'endurance': 	player.enhanced_endurance 	= true;		break;			
+			}
+		} else if (type == "attack") {
+			player.attack = trait;
+		} else if (type == "defence") {
+			player.defence = trait;
 		}
 	} else {
 		$("#trait_result_text").text("Unfortunately that did not do anything");
 	}
+	console.log(player);
 }
 
 $(document).ready(function() {
@@ -82,9 +104,13 @@ $(document).ready(function() {
 		console.log("system.clicks: "+system.clicks);
 	});
 
-	// $("#open_room_npc").removeAttr('disabled');
-	// trait_calc(1, "speed");
-	// trait_calc(1, "vision");
+	trait_calc(1, "speed", "basic");
+	trait_calc(1, "vision", "basic");
+	system.place_item_puzzle_rm = true;
+
+	// player.death_count = 1;
+	// system.rune_wall_broken = true;
+	// system.approach_statue  = true;
 
 	$(document).on("click", initial_rm_click_fn);
 	$(document).click();
@@ -115,6 +141,26 @@ $(document).ready(function() {
 			set_loc("Dark Room");
 			system.clicks = 0;
 			$(document).on("click", puzzle_rm_click_fn);
+		} else if (this.id === "open_boss_room") {
+			set_loc("Boss Room");
+			
+			if (player.first_battle) {
+				//boss properties
+				if (player.attack == "fire") 		boss.defence = "water";
+				else if (player.attack == "water") 	boss.defence = "grass";
+				else if (player.attack == "grass")	boss.defence = "fire";
+				else if (player.attack == "none") 	boss.defence = rand_buff();
+
+				if (player.defence == "fire") 		boss.attack = "water";
+				else if (player.defence == "water")	boss.attack = "grass";
+				else if (player.defence == "grass") boss.attack = "fire";
+				else if (player.defence == "none")	boss.attack = rand_buff();
+
+				player.first_battle = false;
+			}
+		
+			system.clicks = 0;
+			$(document).on("click", boss_rm_click_fn);
 		}
 	});
 
@@ -180,9 +226,31 @@ $(document).ready(function() {
 				break;
 			case 'place_item':
 				if ($(this).data('action')) {
-					print_info("You hear a click and the wall opens to reveal a new pathway.");
+					system.place_item_puzzle_rm = true;
+					system.clicks = 0;
 				} else {
 					open_room("dark_room");
+				}
+				disable_option();
+				break;
+			case 'choose_buff':
+				if ($(this).data('action')) {
+					system.place_buff_runes = true;
+					open_room("buff_room");
+				} else {
+					open_room("dark_room");
+				}
+				disable_option();
+				break;
+			case 'attack_statue':
+				system.clicks = 0;
+				$(document).off("click", boss_rm_click_fn);
+				if ($(this).data('action')) {
+					if (user_action(true))	$(document).on("click", hit_boss_click_fn);
+					else 					$(document).on("click", miss_boss_click_fn);
+				} else {
+					if (user_action(false)) $(document).on("click", block_success_click_fn);
+					else 					$(document).on("click", block_fail_click_fn);
 				}
 				disable_option();
 				break;
@@ -191,12 +259,18 @@ $(document).ready(function() {
 		}
 	})
 
-	$("#submit_traits").click(function() {
-		if ($("#trait_selector").find(".active.trait").length == 2) {
-			var gene1 = $("#trait_selector").find(".active.trait")[0].dataset;
-			var gene2 = $("#trait_selector").find(".active.trait")[1].dataset;
+	$(".submit_traits").click(function() {
+		var selector_element;
+		switch ($(this).data('submission_type')) {
+			case 'normal': selector_element = "#basic_trait_selector";		break;
+			case 'buff': selector_element = "#buff_trait_selector";	break;
+		}
+		console.log(selector_element);
+		if ($(selector_element).find(".active.trait").length == 2) {
+			var gene1 = $(selector_element).find(".active.trait")[0].dataset;
+			var gene2 = $(selector_element).find(".active.trait")[1].dataset;
 
-			var gene_traits = [gene1.trait, gene2.trait];
+			var gene_types = [gene1.type, gene2.type];
 			var gene_dominance = [gene1.dominance, gene2.dominance];
 
 			$("#ps_10").text(gene1.allele1);
@@ -210,30 +284,48 @@ $(document).ready(function() {
 			$("#ps_12").text(gene1.allele1+gene2.allele2);
 			$("#ps_22").text(gene1.allele2+gene2.allele2);
 
-			if (gene1.trait == gene2.trait) {
-				console.log("it matches");					
-				if (gene_dominance.includes("full")) {
-					trait_calc(1, gene1.trait);
-				} else if (gene_dominance.includes("partial")) {
-					if (gene_dominance.includes("none")) {
-						trait_calc(0.5, gene1.trait);
+			console.log(gene_types);
+			if (gene_types[0] == "basic" && gene_types[1] == "basic") {
+				if (gene1.trait == gene2.trait) {
+					console.log("it matches");					
+					if (gene_dominance.includes("full")) {
+						trait_calc(1, gene1.trait, gene1.type);
+					} else if (gene_dominance.includes("partial")) {
+						if (gene_dominance.includes("none")) {
+							trait_calc(0.5, gene1.trait, gene1.type);
+						} else {
+							trait_calc(0.75, gene1.trait, gene1.type);
+						}
 					} else {
-						trait_calc(0.75, gene1.trait);
+						trait_calc(0, gene1.trait, gene1.type);
 					}
 				} else {
-					trait_calc(0, gene1.trait);
+					trait_calc(0, gene1.trait, gene1.type);
 				}
+				$("#trait_result").modal('show');
+			} else if (gene_types.includes("attack") && gene_types.includes("defence")) {
+				if (gene1.dominance == "full") 			trait_calc(1, gene1.trait, gene1.type);
+				else if (gene1.dominance == "partial")	trait_calc(0.5, gene1.trait, gene1.type);
+				else if (gene1.dominance == "none") 	trait_calc(0, gene1.trait, gene1.type);
+
+				if (gene2.dominance == "full") 			trait_calc(1, gene2.trait, gene2.type);
+				else if (gene2.dominance == "partial")	trait_calc(0.5, gene2.trait, gene2.type);
+				else if (gene2.dominance == "none") 	trait_calc(0, gene2.trait, gene2.type);
+				
+				$("#trait_result").modal('show');
 			} else {
-				trait_calc(0, gene1.trait);
+				alert("Please choose appropriate combinations of traits");
 			}
-			$("#trait_result").modal('show');
 		} else {
-			alert("Please select two traits");
+				alert("Please select two traits");
 		}
 	})
 
 	$("#trait_result").on('hide.bs.modal', function(e) {
-		$(trait_selector).find(".trait.active").removeClass("active");
-		open_room("start_room");
+		$(".trait_selector").find(".trait.active").removeClass("active");
+		if ($("#location_element").text() == "Puzzle Room")
+			$("#open_boss_room").click();
+		else
+			open_room("start_room");
 	})
 })	

@@ -67,3 +67,56 @@ function print_info(text) {
 function set_loc(room) {
 	$("#location_element").text(room);
 }
+
+function rand_buff() {
+	var num = Math.random();
+	if (num < 0.33) 	return "fire";
+	else if (num <0.66)	return "water";
+	else 				return "grass";
+}
+
+function calc_success(prob) {
+	var num = Math.random();
+	if (num < prob) return true;
+	else 			return false;
+} 
+
+function user_action(attack) {
+	if (attack) {
+		switch (player.attack) {
+			case 'fire':
+				if (boss.defence == "fire")			return calc_success(0.5);
+				else if (boss.defence == "water")	return calc_success(0.25);
+				else if (boss.defence == "grass")	return calc_success(0.75);
+				break;
+			case 'water':
+				if (boss.defence == "fire")			return calc_success(0.75);
+				else if (boss.defence == "water")	return calc_success(0.5);
+				else if (boss.defence == "grass")	return calc_success(0.25);
+				break;
+			case 'grass':
+				if (boss.defence == "fire")			return calc_success(0.25);
+				else if (boss.defence == "water")	return calc_success(0.75);
+				else if (boss.defence == "grass")	return calc_success(0.5);
+				break;
+		}
+	} else {
+		switch (player.defence) {
+			case 'fire':
+				if (boss.attack == "fire")			return calc_success(0.5);
+				else if (boss.attack == "water")	return calc_success(0.25);
+				else if (boss.attack == "grass")	return calc_success(0.75);
+				break;  
+			case 'water':
+				if (boss.attack == "fire")			return calc_success(0.75);
+				else if (boss.attack == "water")	return calc_success(0.5);
+				else if (boss.attack == "grass")	return calc_success(0.25);
+				break;
+			case 'grass':
+				if (boss.attack == "fire")			return calc_success(0.25);
+				else if (boss.attack == "water")	return calc_success(0.75);
+				else if (boss.attack == "grass")	return calc_success(0.5);
+				break;
+		}
+	}
+}

@@ -21,10 +21,11 @@ function initial_rm_click_fn() {
 	switch (system.clicks) {
 		case 0: print_info("You wake up from a splitting headache and notice your arms with broken shackles.");	break;
 		case 1: print_info("You don’t seem to remember anything or how you ended up here. ");					break;
-		case 2: print_info("This place reeks of death.");														break;
-		case 3: print_info("You can’t stand it any longer so you get up and open the gate.");					break;
-		case 4: print_info("You climb up the stairs and notice three paths ahead of you. ");					break;
-		case 5: open_room("start_room");																		break;
+		case 2: print_info("You pick up the sword and shield lying next to you.");								break;
+		case 3: print_info("This place reeks of death.");														break;
+		case 4: print_info("You can’t stand it any longer so you get up and open the gate.");					break;
+		case 5: print_info("You climb up the stairs and notice three paths ahead of you. ");					break;
+		case 6: open_room("start_room");																		break;
 	}
 
 	system.clicks++;
@@ -224,23 +225,119 @@ function follow_line_click_fn() {
 }
 
 function puzzle_rm_click_fn() {
-	switch (system.clicks) {
-		case 0: print_info("You enter a brightly lit room with strange carvings on the wall.");	break;
-		case 1: print_info("They are reminiscent of the statue from the earlier room.");		break;
-		case 2: print_info("You see a square-shaped hole within the wall…");					break;
-		case 3: 
-			if (player.has_item) {
-				print_info("Will you place the stone inside the wall?");	
+	if (system.place_buff_runes) {
+		print_info("Will you place the runes on the two hands of the statue?");
+		enable_option(
+			{"option": "choose_buff", "text": "Yes", "action": true},
+			{"option": "choose_buff", "text": "No", "action": false}
+		);		
+	} else if (system.place_item_puzzle_rm) {
+		switch (system.clicks) {
+			case 0: print_info("You hear a click and the wall opens to reveal a new pathway.");				break;
+			case 1: print_info("You enter a dimly-lit room with a large number of runes laying around. ");	break;
+			case 2: print_info("You collect the runes.");													break;
+			case 3: print_info("The runes seem different from the previous ones.");							break;
+			case 4: print_info("They seem to glow faintly…");												break;
+			case 5: print_info("You walk forwards and encounter two statues.");								break;
+			case 6: print_info("You face the statue from the earlier room yet again.");						break;
+			case 7: print_info("And you face another with an empty heart… ");								break;
+			case 8: print_info("However, it is enormous wielding a large hammer.");							break;
+			case 9: 
+				print_info("Will you place the runes on the two hands of the statue?");
 				enable_option(
-					{"option": "place_item", "text": "Yes", "action": true},
-					{"option": "place_item", "text": "No", "action": false}
+					{"option": "choose_buff", "text": "Yes", "action": true},
+					{"option": "choose_buff", "text": "No", "action": false}
 				);
-			} else {
-				open_room("dark_room");
-			}
+				break;
+		}
+	} else {
+		switch (system.clicks) {
+			case 0: print_info("You enter a brightly lit room with strange carvings on the wall.");	break;
+			case 1: print_info("They are reminiscent of the statue from the earlier room.");		break;
+			case 2: print_info("You see a square-shaped hole within the wall…");					break;
+			case 3: 
+				if (player.has_item) {
+					print_info("Will you place the stone inside the wall?");	
+					enable_option(
+						{"option": "place_item", "text": "Yes", "action": true},
+						{"option": "place_item", "text": "No", "action": false}
+					);
+				} else {
+					open_room("dark_room");
+				}
+				break;
+		}
+	}
+	system.clicks++;
+}
+
+function boss_rm_click_fn() {
+	switch (system.clicks) {
+		case 0: print_info("Just as you begin to walk away…");																		break;
+		case 1: print_info("The statue with the empty heart begins to glow…");														break;
+		case 2: 
+			console.log(boss);
+			if (boss.defence == "fire")			print_info("The statue stands up with a scarlet glow.");
+			else if (boss.defence == "water")	print_info("The statue stands up with an azure glow");
+			else if (boss.defence == "grass")	print_info("The statue stands up with an emerald glow.");
+			break;
+		case 3: print_info("In a split second, the statue immediately knocks you back to the end of the room with a swift swing.");	break;
+		case 4: print_info("You try to collect your senses and as you glance forwards…");											break;
+		case 5: 
+			print_info("The statue raises its hammer and charges at you with a ferocious scream. ");
+			enable_option(
+				{"option": "attack_statue", "text": "Attack", "action": true},
+				{"option": "attack_statue", "text": "Block", "action": false}
+			);
+			break;
+	}
+
+	system.clicks++;
+}
+
+function hit_boss_click_fn() {
+	switch (system.clicks) {
+		case 0: print_info("The statue is slow and you manage to swiftly move across his flank. ");						break;
+		case 1: print_info("The statue tries to crush you with the hammer but misses and smashes against the wall. ");	break;
+		case 2: print_info("You use this opportunity and pierce it from behind. ");										break;
+		case 3: print_info("You pierce the statue’s armour. ");															break;
+		case 4: print_info("The armour begins to crumble and the statue falls down. ");									break;
+		case 5: print_info("You break the unstable wall which leads to a long corridor.");								break;
+		case 6: print_info("You walk across a long corridor and finally see a glimpse of light.	");						break;
+		case 7: alert("Congratulations! You have won the game. You can refresh this page to play once more");			break;
+		//end game
+	}
+	system.clicks++;
+}
+
+function miss_boss_click_fn() {
+	switch (system.clicks) {
+		case 0: print_info("The statue is slow and you manage to swiftly move across his flank ");	break;
+		case 1: print_info("The statue tries to crush you but misses and smashes the wall. ");		break;
+		case 2: print_info("You use this opportunity and pierce it from behind. ");					break;
+		case 3: print_info("Your sword cracks and turns into dust just as you touch the armour. ");	break;
+		case 4: 
+			print_info("You try to dodge but the statue swings its hammer in circle crushing you to death.");	
+			player_died();
+			open_room("death_room");
 			break;
 	}
 	system.clicks++;
+}
+
+function block_successful_click_fn() {
+	print_info("You manage to take the hit but your shield is crushed. ");
+	enable_option(
+		{"option": "attack_statue", "text": "Attack", "action": true},
+		{"option": "attack_statue", "text": "Block", "action": false}
+	);
+	$("#uo_1").click();
+}
+
+function block_fail_click_fn() {
+	print_info("The hammer crushes the shield instantly and knocks you against the wall. ");
+	player_died();
+	open_room("death_room");
 }
 
 function close_room() {
@@ -255,6 +352,12 @@ function close_room() {
 	$(document).off("click", item_rm_click_fn);
 	$(document).off("click", follow_line_click_fn);
 	$(document).off("click", puzzle_rm_click_fn);
+	$(document).off("click", boss_rm_click_fn);
+	$(document).off("click", hit_boss_click_fn);
+	$(document).off("click", miss_boss_click_fn);
+	$(document).off("click", block_successful_click_fn);
+	$(document).off("click", block_fail_click_fn);
+
 }
 
 function open_room(room_name) {
