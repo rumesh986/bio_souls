@@ -104,13 +104,9 @@ $(document).ready(function() {
 		console.log("system.clicks: "+system.clicks);
 	});
 
-	trait_calc(1, "speed", "basic");
-	trait_calc(1, "vision", "basic");
-	system.place_item_puzzle_rm = true;
-
-	// player.death_count = 1;
-	// system.rune_wall_broken = true;
-	// system.approach_statue  = true;
+	// trait_calc(1, "speed", "basic");
+	// trait_calc(1, "vision", "basic");
+	// system.place_item_puzzle_rm = true;
 
 	$(document).on("click", initial_rm_click_fn);
 	$(document).click();
