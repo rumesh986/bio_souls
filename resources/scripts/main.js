@@ -37,14 +37,6 @@ var player = {
 	attack: "none",
 	defence: "none",
 
-	// fire_attack:  false,
-	// water_attack: false,
-	// grass_attack: false,
-
-	// fire_defence:  false,
-	// water_defence: false,
-	// grase_defence: false,
-
 	has_item: false,
 }
 
